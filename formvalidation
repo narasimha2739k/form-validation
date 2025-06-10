@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Validation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 400px;
+            background: white;
+            padding: 20px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .error {
+            color: red;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Registration Form</h2>
+        <form id="registrationForm" onsubmit="validateForm(event)">
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" oninput="validateField(this)">
+                <small class="error" id="fullNameError"></small>
+            </div>
+            <div class="form-group">
+                <label for="email">Email ID</label>
+                <input type="email" id="email" oninput="validateField(this)">
+                <small class="error" id="emailError"></small>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="text" id="phone" oninput="validateField(this)">
+                <small class="error" id="phoneError"></small>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" oninput="validateField(this)">
+                <small class="error" id="passwordError"></small>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" oninput="validateField(this)">
+                <small class="error" id="confirmPasswordError"></small>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <script>
+        function validateForm(event) {
+            event.preventDefault(); // Prevent form submission
+
+            // Use logical AND instead of bitwise AND
+            let valid = true;
+            valid = validateField(document.getElementById('fullName')) && valid;
+            valid = validateField(document.getElementById('email')) && valid;
+            valid = validateField(document.getElementById('phone')) && valid;
+            valid = validateField(document.getElementById('password')) && valid;
+            valid = validateField(document.getElementById('confirmPassword')) && valid;
+
+            if (valid) {
+                alert("Form submitted successfully!");
+                document.getElementById("registrationForm").reset();
+            }
+        }
+
+        function validateField(input) {
+            let id = input.id;
+            let value = input.value.trim();
+            let errorElement = document.getElementById(id + "Error");
+
+            switch (id) {
+                case "fullName":
+                    if (value.length < 5) {
+                        errorElement.textContent = "Name must be at least 5 characters";
+                        return false;
+                    }
+                    break;
+                case "email":
+                    if (!value.includes("@")) {
+                        errorElement.textContent = "Enter a valid email address";
+                        return false;
+                    }
+                    break;
+                case "phone":
+                    if (value === "123456789" || value.length !== 10 || isNaN(value)) {
+                        errorElement.textContent = "Enter a valid 10-digit phone number";
+                        return false;
+                    }
+                    break;
+                case "password":
+                    let fullName = document.getElementById("fullName").value.toLowerCase();
+                    if (value.length < 8 || value.toLowerCase() === "password" || value.toLowerCase() === fullName) {
+                        errorElement.textContent = "Password must be at least 8 characters and not too common";
+                        return false;
+                    }
+                    break;
+                case "confirmPassword":
+                    if (value !== document.getElementById("password").value) {
+                        errorElement.textContent = "Passwords do not match";
+                        return false;
+                    }
+                    break;
+            }
+
+            errorElement.textContent = "";
+            return true;
+        }
+    </script>
+</body>
+</html>
